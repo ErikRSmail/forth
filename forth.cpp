@@ -11,7 +11,7 @@ class forth{
     public:
     void run();
     private:
-    void execute_word(std::string& word);
+    void execute_primitive(std::string& word);
     int pop();
     void push(int a);
     std::stack<int> data_stack;
@@ -23,10 +23,10 @@ int forth::pop(){//although we have two stacks, this operates on the data stack 
     data_stack.pop();
     return temp;
 }
-void forth::push(int a){
+void forth::push(int a){//as does this
     data_stack.push(a);
 }
-void forth::execute_word(std::string& word){
+void forth::execute_primitive(std::string& word){
     if(word == "."){std::cout << pop();}
     else if(word == "+"){push(pop() + pop());}
     else if(word == "-"){push(pop() - pop());}
@@ -45,7 +45,7 @@ void forth::execute_word(std::string& word){
     else if(word == "^"){push(pop() ^ pop());}
     else if(word == ">>"){push(pop() >> pop());}
     else if(word == "<<"){push(pop() << pop());}
-    else if(word == "CR"){std::cout << "\n";}//could be part of stdlib
+    else if(word == "CR"){std::cout << "\n";}
     else if(word == "EMIT"){std::cout << (char)pop();}
     else if(word == "DROP"){pop();}
     else if(word == "NOP"){}
@@ -77,7 +77,6 @@ void forth::execute_word(std::string& word){
         return_stack.pop();
     }
     else if(word == "R@"){push(return_stack.top());}
-    else if(macros.count(word)){}//TODO IMPL
     else{
         push(stoi(word));
     }
@@ -89,8 +88,35 @@ void forth::run(){
         std::cout << "forth>>> ";
         std::getline(std::cin,line);
         std::stringstream words(line);
-        while(words >> word){//todo add hijack if word == ":"
-            execute_word(word);
+        while(words >> word){
+            if(word == ":"){ // case we have a new macro being defined
+                std::string macro_id;
+                std::string macro_body;
+                std::string to_append;
+                words >> macro_id;
+                words >> to_append;
+                while(to_append != ";"){//TODO brutal. 
+                    macro_body.push_back(' ');
+                    macro_body += to_append;
+                    words >> to_append;
+                }
+                macro_body.push_back(' ');
+                macros[macro_id] = macro_body;
+            }
+            else if(macros.count(word)){//TODO has to be a better way to do this.
+                std::string temp(macros.at(word));
+                std::string to_append;
+                while(words >> to_append){
+                    temp +=to_append;
+                    temp.push_back(' ');
+                }
+                words.str(std::string());
+                words.clear();
+                words << temp;
+            }
+            else{
+                execute_primitive(word);
+            }
         }
         
     }
