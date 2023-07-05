@@ -64,13 +64,32 @@ void forth::execute_primitive(std::string& word){
         int depth = pop();
         std::stack<int> temp;
         while(depth){temp.push(pop());depth--;}
-        int to_dup = pop();
+        int to_dup = data_stack.top();
         while(!temp.empty()){push(temp.top());temp.pop();}
         push(to_dup);
     }
-    else if(word == "ROLL"){}//TODO
-    else if(word == "ROT"){}//TODO
-    else if(word == "SWAP"){}//TODO
+    else if(word == "ROLL"){
+        int depth = pop();
+        std::stack<int> temp;
+        while(depth){temp.push(pop());depth--;}
+        int to_move = pop();
+        while(!temp.empty()){push(temp.top());temp.pop();}
+        push(to_move);
+    }//TODO
+    else if(word == "ROT"){
+        int a = pop();
+        int b = pop();
+        int c = pop();
+        push(b);
+        push(a);
+        push(c);
+    }
+    else if(word == "SWAP"){
+        int a = pop();
+        int b = pop();
+        push(a);
+        push(b);
+    }//TODO
     else if(word == "R"){return_stack.push(pop());}
     else if(word == "R>"){
         push(return_stack.top());
