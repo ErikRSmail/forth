@@ -1,2 +1,1 @@
-#todo
-impl adding macros. impl last few stdlib words marked TODO
+This is just a (mostly complete) FORTH interpreter. 

@@ -133,6 +133,14 @@ void forth::run(){
                 words.clear();
                 words << temp;
             }
+            else if(word == "IF"){
+                if(!pop()){
+                    while(word != "THEN"){words >> word;}//if you forget the THEN an infinite LOOP occurs
+                }
+            }
+            else if(word == "THEN"){
+                //ignore
+            }
             else{
                 execute_primitive(word);
             }
