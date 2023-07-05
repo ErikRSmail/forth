@@ -138,7 +138,39 @@ void forth::run(){
                     while(word != "THEN"){words >> word;}//if you forget the THEN an infinite LOOP occurs
                 }
             }
-            else if(word == "THEN"){
+            else if(word == "DO"){
+                int a = pop();
+                int b = pop();
+                if(!(b-1)){
+                    while(word != "LOOP"){words >> word;}// same deal as THEN
+                } else {
+                    std::string loop_body;
+                    std::string temp;
+                    std::string to_append;
+                    words >> to_append;
+                    while(to_append != "LOOP"){
+                        loop_body += to_append;
+                        loop_body.push_back(' ');
+                        words >> to_append;
+                    }
+                    for(int i=0;i<b-a;i++){
+                        loop_body.push_back(' ');
+                        //std::cout <<"b-a"<<b-a;
+                        //std::cout <<"i"<<i;
+                        temp += loop_body;
+                    }
+                    while(words >> to_append){
+                        temp.push_back(' ');
+                        temp += to_append;
+                    }
+                    //std::cout << "loop body:" << loop_body << "\n";
+                    words.str(std::string());
+                    words.clear();
+                    words << temp;
+                }
+                
+            }
+            else if(word == "LOOP" || word == "THEN"){
                 //ignore
             }
             else{
